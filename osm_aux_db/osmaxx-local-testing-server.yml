@@ -1,4 +1,4 @@
 version: '2'
 services:
-  osmboundaries_database:
+  coast_land_sea_database:
     command: postgres -F

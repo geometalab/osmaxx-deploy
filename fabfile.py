@@ -45,6 +45,7 @@ health_check = Action('health_check', default_components=set(ALL_COMPONENTS))
 _pre_start = Action('pre_start', default_components=set(ALL_COMPONENTS))
 _actual_start = Action('start', default_components=set(ALL_COMPONENTS))
 _stop = Action('stop', default_components=set(ALL_COMPONENTS))
+_change = Action('change', default_components=set(ALL_COMPONENTS))
 
 DOCKER_COMPOSE_PATH = 'osmaxx-deploy/bin/docker-compose'
 
@@ -56,6 +57,11 @@ def prepare_host():
 def start(on_components=set(ALL_COMPONENTS)):
     _pre_start(on_components=on_components)
     _actual_start(on_components=on_components)
+    health_check(on_components=on_components)
+
+
+def upgrade(on_components=set(ALL_COMPONENTS)):
+    _change(on_components=on_components)
     health_check(on_components=on_components)
 
 

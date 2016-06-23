@@ -58,6 +58,13 @@ def has_succeeded(container_name):
     return m is not None
 
 
+def container_exists(container_name):
+    result = run('docker ps -a')
+    pattern = r'.*{container_name}\r?$'.format(container_name=re.escape(container_name))
+    m = re.search(pattern, result, flags=re.MULTILINE)
+    return m is not None
+
+
 def has_succeeded_or_is_running(container_name):
     return is_running(container_name) or has_succeeded(container_name)
 
