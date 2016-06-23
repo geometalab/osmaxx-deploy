@@ -1,5 +1,5 @@
 import root
-from command_definitions import Compose, has_succeeded_or_is_running, container_exists
+from command_definitions import Compose, has_succeeded_or_is_running, container_exists, is_running
 
 health_check = [
     Compose(['ps']),
@@ -20,6 +20,10 @@ start = [
     Compose(
         ['up', '-d', 'coast_land_sea_importer'],
         predicate=lambda: not has_succeeded_or_is_running('coast_land_sea_importer')
+    ),
+    Compose(
+        ['start', 'coast_land_sea_database'],
+        predicate=lambda: not is_running('coast_land_sea_database')
     ),
 ]
 
