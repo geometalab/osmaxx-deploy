@@ -1,0 +1,4 @@
+version: '2'
+services:
+  osmboundaries_database:
+    command: postgres -F

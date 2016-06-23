@@ -1,0 +1,5 @@
+# this assumes staging has less memory and is less powerfull than production
+version: '2'
+services:
+  osmboundaries_database:
+    command: postgres -B 2GB -F -N 512 -S 3GB

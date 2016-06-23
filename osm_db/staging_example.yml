@@ -1,0 +1,24 @@
+# this assumes staging has less memory and is less powerfull than production
+version: '2'
+services:
+  osm_db:
+    command: postgres -B 2GB -F -N 512 -S 4GB --max_wal_size=12GB
+  osm_importer:
+    command: >
+      sh -c "
+      mkdir -p /var/data/osm-planet/pbf &&
+      wget -O /tmp/monaco-latest.osm.pbf http://download.geofabrik.de/europe/monaco-latest.osm.pbf &&
+      wget -O /tmp/switzerland-latest.osm.pbf http://download.geofabrik.de/europe/switzerland-latest.osm.pbf &&
+      wget -O /tmp/egypt-latest.osm.pbf http://download.geofabrik.de/africa/egypt-latest.osm.pbf &&
+      wget -O /tmp/ethiopia-latest.osm.pbf http://download.geofabrik.de/africa/ethiopia-latest.osm.pbf &&
+      osmconvert /tmp/monaco-latest.osm.pbf -o=/tmp/monaco-latest.osm &&
+      osmconvert /tmp/switzerland-latest.osm.pbf -o=/tmp/switzerland-latest.osm &&
+      osmconvert /tmp/egypt-latest.osm.pbf -o=/tmp/egypt-latest.osm &&
+      osmconvert /tmp/ethiopia-latest.osm.pbf -o=/tmp/ethiopia-latest.osm &&
+      osmconvert /tmp/monaco-latest.osm /tmp/switzerland-latest.osm /tmp/egypt-latest.osm /tmp/ethiopia-latest.osm -o=/var/data/osm-planet/pbf/planet-latest.osm.pbf &&
+      rm /tmp/monaco-latest.osm /tmp/switzerland-latest.osm /tmp/egypt-latest.osm /tmp/ethiopia-latest.osm &&
+      rm /tmp/monaco-latest.osm.pbf /tmp/switzerland-latest.osm.pbf /tmp/egypt-latest.osm.pbf /tmp/ethiopia-latest.osm.pbf &&
+      osm2pgsql -c --number-processes 8 -H database -U gis -d gis --slim -C 10000 --prefix osm --hstore --latlon --style /root/styles/terminal.style --tag-transform-script /root/styles/tag_transform_style.lua /var/data/osm-planet/pbf/planet-latest.osm.pbf
+      "
+    labels:
+      io.rancher.container.start_once: "true"

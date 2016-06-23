@@ -1,0 +1,52 @@
+version: '2'
+services:
+  osmboundaries_database:
+    # to limit scaling to exactly 1, we need to specify the container name
+    container_name: osmboundaries_postgis
+    image: geometalab/postgis:9.5
+    volumes:
+      - osmboundaries-postgis-data:/var/lib/postgresql/data/
+    command: postgres -B 2GB -F -N 512 -S 2GB
+    environment:
+      - POSTGRES_DB=osmboundaries
+      - POSTGRES_USER=osmboundaries
+      - POSTGRES_PASSWORD=osmboundaries
+    networks:
+      - osmboundaries-internal
+      - osm
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 1M
+    restart: always
+  osmboundaries_importer:
+    # to limit scaling to exactly 1, we need to specify the container name
+    container_name: osmboundaries_importer
+    image: geometalab/osmboundaries:latest
+    depends_on:
+      - osmboundaries_database
+    links:
+      - osmboundaries_database:osmboundaries-database
+    environment:
+        # the same as the ones in the database above
+        - POSTGRES_DB=osmboundaries
+        - POSTGRES_USER=osmboundaries
+        - POSTGRES_PASSWORD=osmboundaries
+        # same as the link name/depends_on
+        - POSTGRES_HOST=osmboundaries-database
+    networks:
+      - osmboundaries-internal
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 1M
+    labels:
+      io.rancher.container.start_once: "true"
+volumes:
+  osmboundaries-postgis-data: {}
+networks:
+  osmboundaries-internal:
+    driver: bridge
+  osm:
+    external:
+      name: osm

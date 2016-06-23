@@ -1,0 +1,53 @@
+version: '2'
+services:
+  osm_db:
+    # to limit scaling to exactly 1, we need to specify the container name
+    container_name: osm_db
+    image: geometalab/osm_world_postgis
+    volumes:
+      - database-postgis-data:/var/lib/postgresql/data/
+    command: postgres -B 12GB -F -N 512 -S 20GB --max_wal_size=10GB
+    environment:
+      - POSTGRES_DB=gis
+      - POSTGRES_USER=gis
+      - POSTGRES_PASSWORD=gis
+    networks:
+      - osm-world-internal
+      - osm
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 1M
+    restart: always
+  osm_importer:
+    # to limit scaling to exactly 1, we need to specify the container name
+    container_name: osm_importer
+    image: geometalab/continuous-osm2pgsql:0.90.0
+    command: /root/run.sh
+    links:
+      - osm_db:database
+    depends_on:
+      - osm_db
+    volumes:
+      - osm_data:/var/data/osm-planet
+      - osm_cache:/var/cache/osm-cache
+    environment:
+      - num_processes=16
+    networks:
+      - osm-world-internal
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 1M
+volumes:
+  osm_data:
+    external:
+      name: osm_world_data
+  osm_cache: {}
+  database-postgis-data: {}
+networks:
+  osm-world-internal:
+    driver: bridge
+  osm:
+    external:
+      name: osm
