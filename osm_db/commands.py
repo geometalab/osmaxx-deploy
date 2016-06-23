@@ -26,5 +26,5 @@ change = [
 ]
 
 stop = [
-
+    Compose(['stop']),
 ]

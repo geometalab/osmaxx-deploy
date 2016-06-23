@@ -34,5 +34,5 @@ change = [
 ] + start
 
 stop = [
-    Compose(['stop', 'coast_land_sea_database', 'coast_land_sea_importer']),
+    Compose(['stop']),
 ]
