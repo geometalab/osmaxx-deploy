@@ -1,3 +1,9 @@
 .vagrant/
 *.py[oc]
 *.log
+*.yml
+!docker-compose.yml
+!local.yml
+!osmaxx-local-testing-server.yml
+!production_example.yml
+!staging_example.yml
