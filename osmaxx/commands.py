@@ -1,7 +1,9 @@
 import root
 from command_definitions import Compose, container_exists, has_succeeded_or_is_running
 
-COMPOSE_PROJECT_NAME = 'osmaxx2'
+ENVIRONMENT = dict(
+    COMPOSE_PROJECT_NAME='osmaxx2',
+)
 
 health_check = [
     Compose(['ps']),

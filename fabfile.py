@@ -39,8 +39,8 @@ class Action(object):
             print("="*len(exec_string))
 
             module = ALL_COMPONENTS[component]
-            if hasattr(module, 'COMPOSE_PROJECT_NAME'):
-                component_environment.update({'COMPOSE_PROJECT_NAME': module.COMPOSE_PROJECT_NAME})
+            if hasattr(module, 'ENVIRONMENT'):
+                component_environment = module.ENVIRONMENT
 
             for command in getattr(module, self.action):
                 command.execute(project=component, hostname=env.host_string, environment=component_environment)

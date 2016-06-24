@@ -34,10 +34,9 @@ class Compose(CallList):
     def execute(self, project, hostname, environment=None):
         if environment is None:
             environment = {}
-        compose_environment_name = 'COMPOSE_PROJECT_NAME'
-        compose_project_name = environment.get(compose_environment_name, None)
-        if compose_project_name:
-            self.base_command = ['{}={}'.format(compose_environment_name, compose_project_name)] + self.base_command
+        self.base_command = [
+            '{}={}'.format(env_var_name, env_var_value) for env_var_name, env_var_value in environment.items()
+        ] + self.base_command
 
         provide_docker_compose()
         compose_main_file = '{0}/docker-compose.yml'.format(project)

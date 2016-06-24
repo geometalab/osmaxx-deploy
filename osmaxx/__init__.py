@@ -1,4 +1,4 @@
-from .commands import change, health_check, pre_start, start, stop, logs, COMPOSE_PROJECT_NAME
+from .commands import change, health_check, pre_start, start, stop, logs, ENVIRONMENT
 
 __all__ = [
     'change',
@@ -7,5 +7,5 @@ __all__ = [
     'start',
     'stop',
     'logs',
-    'COMPOSE_PROJECT_NAME',
+    'ENVIRONMENT',
 ]
