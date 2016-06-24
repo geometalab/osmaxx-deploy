@@ -4,6 +4,7 @@ from fabric.api import env, run
 
 import osm_aux_db
 import osm_db
+
 from host_setup import provide_docker_compose
 
 env.use_ssh_config = True
