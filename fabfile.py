@@ -42,7 +42,7 @@ class Action(object):
             if hasattr(module, 'COMPOSE_PROJECT_NAME'):
                 component_environment.update({'COMPOSE_PROJECT_NAME': module.COMPOSE_PROJECT_NAME})
 
-            for command in getattr(ALL_COMPONENTS[component], self.action):
+            for command in getattr(module, self.action):
                 command.execute(project=component, hostname=env.host_string, environment=component_environment)
             print('*'*40)
 
