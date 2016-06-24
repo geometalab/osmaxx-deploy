@@ -32,6 +32,8 @@ class Compose(CallList):
         self.base_command = [DOCKER_COMPOSE_EXECUTABLE]
 
     def execute(self, project, hostname, environment=None):
+        if environment is None:
+            environment = {}
         compose_environment_name = 'COMPOSE_PROJECT_NAME'
         compose_project_name = environment.get(compose_environment_name, None)
         if compose_project_name:
