@@ -1,4 +1,4 @@
-from .commands import change, health_check, pre_start, start, stop
+from .commands import change, health_check, pre_start, start, stop, logs
 
 __all__ = [
     'change',
@@ -6,4 +6,5 @@ __all__ = [
     'pre_start',
     'start',
     'stop',
+    'logs',
 ]

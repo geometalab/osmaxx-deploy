@@ -36,3 +36,7 @@ change = [
 stop = [
     Compose(['stop']),
 ]
+
+logs = [
+    Compose(['logs']),
+]

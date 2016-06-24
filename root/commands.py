@@ -1,6 +1,5 @@
 from command_definitions import Docker, net_exists
 
-
 health_check = []
 
 pre_start = [
@@ -13,3 +12,5 @@ start = []
 change = []
 
 stop = []
+
+logs = []

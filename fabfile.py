@@ -52,6 +52,7 @@ class Action(object):
         self.perform(on_components)
 
 health_check = Action('health_check', default_components=set(ALL_COMPONENTS))
+logs = Action('logs', default_components=set(ALL_COMPONENTS))
 _pre_start = Action('pre_start', default_components=set(ALL_COMPONENTS))
 _actual_start = Action('start', default_components=set(ALL_COMPONENTS))
 _stop = Action('stop', default_components=set(ALL_COMPONENTS))

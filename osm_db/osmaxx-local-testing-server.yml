@@ -6,11 +6,10 @@ services:
     command: >
       sh -c "
       mkdir -p /var/data/osm-planet/pbf &&
-      wget -O /tmp/egypt-latest.osm.pbf http://download.geofabrik.de/africa/egypt-latest.osm.pbf &&
-      osmconvert /tmp/egypt-latest.osm.pbf -o=/tmp/egypt-latest.osm &&
+      wget -O /tmp/egypt-latest.osm.bzip2 http://download.geofabrik.de/africa/egypt-latest.osm.bz2 &&
+      bunzip2 /tmp/egypt-latest.osm.bzip2 &&
       osmconvert /tmp/egypt-latest.osm -o=/var/data/osm-planet/pbf/planet-latest.osm.pbf &&
       rm /tmp/egypt-latest.osm &&
-      rm /tmp/egypt-latest.osm.pbf &&
       osm2pgsql -c --number-processes 8 -H database -U gis -d gis --slim -C 2000 --prefix osm --hstore --latlon --style /root/styles/terminal.style --tag-transform-script /root/styles/tag_transform_style.lua /var/data/osm-planet/pbf/planet-latest.osm.pbf
       "
     labels:
