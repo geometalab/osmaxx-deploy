@@ -12,7 +12,12 @@ class CallList(object):
         self.base_command = ['echo']
         self.predicate = predicate
 
-    def execute(self, project, hostname):
+    def execute(self, project, hostname, environment=None):
+        if environment is None:
+            environment = {}
+        self.base_command = [
+            '{}={}'.format(env_var_name, env_var_value) for env_var_name, env_var_value in environment.items()
+        ] + self.base_command
         commands = self.base_command + \
                    [command.format(project=project, hostname=hostname) for command in self.command_list]
         if self.predicate():
@@ -32,11 +37,6 @@ class Compose(CallList):
         self.base_command = [DOCKER_COMPOSE_EXECUTABLE]
 
     def execute(self, project, hostname, environment=None):
-        if environment is None:
-            environment = {}
-        self.base_command = [
-            '{}={}'.format(env_var_name, env_var_value) for env_var_name, env_var_value in environment.items()
-        ] + self.base_command
 
         provide_docker_compose()
         compose_main_file = '{0}/docker-compose.yml'.format(project)
@@ -53,7 +53,7 @@ class Compose(CallList):
         self.base_command += [
             '-f', compose_main_file, '-f', compose_host_file
         ]
-        super(Compose, self).execute(project, hostname)
+        super(Compose, self).execute(project, hostname, environment=environment)
 
 
 def is_running(container_name, name_is_regex=False):
