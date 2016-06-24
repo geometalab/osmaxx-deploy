@@ -4,7 +4,7 @@ from fabric.api import env, run
 
 import osm_aux_db
 import osm_db
-import osmaxx2
+import osmaxx
 
 from host_setup import provide_docker_compose
 
@@ -12,12 +12,12 @@ env.use_ssh_config = True
 
 OSM_AUX_COMPONENT = 'osm_aux_db'
 OSM_DB_COMPONENT = 'osm_db'
-OSMAXX2 = 'osmaxx2'
+OSMAXX2 = 'osmaxx'
 
 ALL_COMPONENTS = {
     OSM_AUX_COMPONENT: osm_aux_db,
     OSM_DB_COMPONENT: osm_db,
-    OSMAXX2: osmaxx2,
+    OSMAXX2: osmaxx,
 }
 
 
