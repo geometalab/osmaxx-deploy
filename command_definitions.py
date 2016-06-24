@@ -28,9 +28,15 @@ class Docker(CallList):
 class Compose(CallList):
     def __init__(self, command, predicate=lambda: True):
         super(Compose, self).__init__(command=command, predicate=predicate)
+
         self.base_command = [DOCKER_COMPOSE_EXECUTABLE]
 
     def execute(self, project, hostname, environment=None):
+        compose_environment_name = 'COMPOSE_PROJECT_NAME'
+        compose_project_name = environment.get(compose_environment_name, None)
+        if compose_project_name:
+            self.base_command = ['{}={}'.format(compose_environment_name, compose_project_name)] + self.base_command
+
         provide_docker_compose()
         compose_main_file = '{0}/docker-compose.yml'.format(project)
         compose_host_file = '{0}/{1}.yml'.format(project, hostname)

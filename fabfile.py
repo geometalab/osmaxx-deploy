@@ -4,6 +4,7 @@ from fabric.api import env, run
 
 import osm_aux_db
 import osm_db
+import osmaxx2
 
 from host_setup import provide_docker_compose
 
@@ -11,10 +12,12 @@ env.use_ssh_config = True
 
 OSM_AUX_COMPONENT = 'osm_aux_db'
 OSM_DB_COMPONENT = 'osm_db'
+OSMAXX2 = 'osmaxx2'
 
 ALL_COMPONENTS = {
     OSM_AUX_COMPONENT: osm_aux_db,
     OSM_DB_COMPONENT: osm_db,
+    OSMAXX2: osmaxx2,
 }
 
 
@@ -28,13 +31,19 @@ class Action(object):
             on_components = set(on_components.split(";"))
         assert on_components.issubset(ALL_COMPONENTS.keys())
         for component in on_components:
+            component_environment = {}
+
             exec_string = "executing {} on {}".format(self.action, component)
             print("")
             print(exec_string)
             print("="*len(exec_string))
 
+            module = ALL_COMPONENTS[component]
+            if hasattr(module, 'COMPOSE_PROJECT_NAME'):
+                component_environment.update({'COMPOSE_PROJECT_NAME': module.COMPOSE_PROJECT_NAME})
+
             for command in getattr(ALL_COMPONENTS[component], self.action):
-                command.execute(project=component, hostname=env.host_string)
+                command.execute(project=component, hostname=env.host_string, environment=component_environment)
             print('*'*40)
 
     def __call__(self, on_components=None):
