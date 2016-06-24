@@ -7,3 +7,7 @@
 !osmaxx-local-testing-server.yml
 !production_example.yml
 !staging_example.yml
+*.env
+!osmaxx2/base.env
+!osmaxx2/frontend.env
+!osmaxx2/conversion.env

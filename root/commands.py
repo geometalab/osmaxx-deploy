@@ -5,6 +5,7 @@ health_check = []
 
 pre_start = [
     Docker(['network', 'create', '-d', 'bridge', 'osm'], predicate=lambda: not net_exists('osm')),
+    Docker(['network', 'create', '-d', 'bridge', 'nginx-proxy'], predicate=lambda: not net_exists('nginx-proxy')),
 ]
 
 start = []
