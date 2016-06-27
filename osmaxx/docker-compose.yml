@@ -97,6 +97,9 @@ services:
       - worker-data:/data/media/job_result_files
     links:
       - conversionserviceredis:redis
+    external_links:
+      - coast_land_sea_database:osmboundaries-database
+      - osm_db:world-database
     env_file:
       - base.env
       - conversion.env
