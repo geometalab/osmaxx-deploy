@@ -1,8 +1,21 @@
-import os, re
+import functools
+import os
+import re
 
 import root
 from ruamel import yaml
 from command_definitions import Compose, container_exists, is_running
+
+
+def is_not_running(service_name, name_is_regex=True):
+    return not is_running(service_name, name_is_regex=name_is_regex)
+
+
+def container_name_regex(service_name):
+    return r'{compose_project}\_{service}\_\d+'.format(
+        compose_project=re.escape(ENVIRONMENT['COMPOSE_PROJECT_NAME']),
+        service=re.escape(service_name),
+    )
 
 ENVIRONMENT = dict(
     COMPOSE_PROJECT_NAME='osmaxx2',
@@ -29,7 +42,8 @@ with open(os.path.join(os.path.dirname(__file__), 'docker-compose.yml')) as f:
 
 start = [
     Compose(
-        ['up', '-d', service], predicate=lambda: not is_running(container_name_regex(service), name_is_regex=True)
+        ['up', '-d', service],
+        predicate=functools.partial(is_not_running, container_name_regex(service))
     )
     for service in SERVICE_NAMES
 ]
@@ -47,9 +61,3 @@ logs = [
     Compose(['logs']),
 ]
 
-
-def container_name_regex(service_name):
-    return r'{compose_project}\_{service}\_\d+'.format(
-        compose_project=re.escape(ENVIRONMENT['COMPOSE_PROJECT_NAME']),
-        service=re.escape(service_name),
-    )
