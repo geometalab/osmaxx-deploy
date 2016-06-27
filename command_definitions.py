@@ -64,6 +64,10 @@ def is_running(container_name, name_is_regex=False):
     return m is not None
 
 
+def is_not_running(container_name, name_is_regex=False):
+    return not is_running(container_name, name_is_regex=name_is_regex)
+
+
 def has_succeeded(container_name, name_is_regex=False):
     if not name_is_regex:
         container_name = re.escape(container_name)
@@ -71,6 +75,10 @@ def has_succeeded(container_name, name_is_regex=False):
     pattern = r'{status}.*{container_name}\r?$'.format(status=re.escape('Exited (0)'), container_name=container_name)
     m = re.search(pattern, result, flags=re.MULTILINE)
     return m is not None
+
+
+def has_not_succeeded(container_name, name_is_regex=False):
+    return not has_succeeded(container_name, name_is_regex=name_is_regex)
 
 
 def container_exists(container_name, name_is_regex=False):
@@ -82,8 +90,16 @@ def container_exists(container_name, name_is_regex=False):
     return m is not None
 
 
+def container_not_exists(container_name, name_is_regex=False):
+    return not container_exists(container_name, name_is_regex=name_is_regex)
+
+
 def has_succeeded_or_is_running(container_name, name_is_regex=False):
     return is_running(container_name, name_is_regex=name_is_regex) or has_succeeded(container_name, name_is_regex=name_is_regex)
+
+
+def not_has_succeeded_or_is_running(container_name, name_is_regex=False):
+    return not has_succeeded_or_is_running(container_name, name_is_regex=name_is_regex)
 
 
 def net_exists(network_name, name_is_regex=False):
@@ -95,6 +111,10 @@ def net_exists(network_name, name_is_regex=False):
     return m is not None
 
 
+def net_not_exists(network_name, name_is_regex=False):
+    return not net_exists(network_name, name_is_regex=name_is_regex)
+
+
 def volume_exists(volume_name, name_is_regex=False):
     if not name_is_regex:
         volume_name = re.escape(volume_name)
@@ -102,3 +122,7 @@ def volume_exists(volume_name, name_is_regex=False):
     pattern = r'\b{}\r?$'.format(volume_name)
     m = re.search(pattern, result, flags=re.MULTILINE)
     return m is not None
+
+
+def volume_not_exists(volume_name, name_is_regex=False):
+    return volume_exists(volume_name, name_is_regex=name_is_regex)

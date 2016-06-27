@@ -1,5 +1,7 @@
+import functools
+
 import root
-from command_definitions import Compose, has_succeeded_or_is_running, container_exists, is_running
+from command_definitions import Compose, container_not_exists, not_has_succeeded_or_is_running, is_not_running
 
 health_check = [
     Compose(['ps']),
@@ -15,15 +17,15 @@ pre_start = root.pre_start
 start = [
     Compose(
         ['up', '-d', 'coast_land_sea_database'],
-        predicate=lambda: not container_exists('coast_land_sea_database')
+        predicate=functools.partial(container_not_exists, 'coast_land_sea_database')
     ),
     Compose(
         ['up', '-d', 'coast_land_sea_importer'],
-        predicate=lambda: not has_succeeded_or_is_running('coast_land_sea_importer')
+        predicate=functools.partial(not_has_succeeded_or_is_running, 'coast_land_sea_importer')
     ),
     Compose(
         ['start', 'coast_land_sea_database'],
-        predicate=lambda: not is_running('coast_land_sea_database')
+        predicate=functools.partial(is_not_running, 'coast_land_sea_database')
     ),
 ]
 

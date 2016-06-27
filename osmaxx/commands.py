@@ -4,11 +4,7 @@ import re
 
 import root
 from ruamel import yaml
-from command_definitions import Compose, container_exists, is_running
-
-
-def is_not_running(service_name, name_is_regex=True):
-    return not is_running(service_name, name_is_regex=name_is_regex)
+from command_definitions import Compose, is_not_running, container_not_exists
 
 
 def container_name_regex(service_name):
@@ -28,7 +24,7 @@ health_check = [
 pre_start = root.pre_start + [
     Compose(
         ['run', '--rm', 'frontend', 'python3', 'web_frontend/manage.py', 'createsuperuser'],
-        predicate=lambda: not container_exists(container_name_regex('frontenddatabase'), name_is_regex=True)
+        predicate=functools.partial(container_not_exists, container_name_regex('frontenddatabase'), name_is_regex=True)
     ),
 ]
 # Currently fails because of missing networks: https://github.com/docker/compose/issues/2908
