@@ -8,6 +8,6 @@
 !production_example.yml
 !staging_example.yml
 *.env
-!osmaxx2/base.env
-!osmaxx2/frontend.env
-!osmaxx2/conversion.env
+!osmaxx/base.env
+!osmaxx/frontend.env
+!osmaxx/conversion.env
