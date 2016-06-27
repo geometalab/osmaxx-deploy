@@ -18,7 +18,6 @@ pre_start = root.pre_start + [
 start = [
     Compose(['up', '-d', 'osm_db'], predicate=functools.partial(is_not_running, 'osm_db')),
     Compose(['up', '-d', 'osm_importer'], predicate=functools.partial(container_not_exists, 'osm_importer')),
-    Compose(['start', 'osm_db'], predicate=functools.partial(is_not_running, 'osm_db')),
 ]
 
 change = [
