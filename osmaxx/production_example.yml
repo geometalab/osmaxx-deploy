@@ -19,6 +19,7 @@ services:
       # set these if you want to be able to login using OSM
       - SOCIAL_AUTH_OPENSTREETMAP_KEY=
       - SOCIAL_AUTH_OPENSTREETMAP_SECRET=
+      # can't be longer than 30 characters!
       - DJANGO_OSMAXX_CONVERSION_SERVICE_USERNAME=
       - DJANGO_OSMAXX_CONVERSION_SERVICE_PASSWORD=
   mediator:
@@ -27,6 +28,7 @@ services:
       - SENTRY_DSN=
       - SENTRY_RELEASE=
       - DJANGO_SECRET_KEY=
+      # can't be longer than 30 characters!
       - DJANGO_OSMAXX_CONVERSION_SERVICE_USERNAME=
       - DJANGO_OSMAXX_CONVERSION_SERVICE_PASSWORD=
   worker:
