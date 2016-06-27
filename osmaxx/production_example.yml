@@ -1,0 +1,31 @@
+version: '2'
+services:
+  osmaxx-proxy:
+    environment:
+      # comma separated list, no brackets, e.g. localhost,dev.myhost.com
+      - VIRTUAL_HOST=<my.domain.org>
+      - LETSENCRYPT_HOST=<my.domain.org>
+      - LETSENCRYPT_EMAIL=<email@my.domain.org>
+  frontend:
+    environment:
+      # comma separated list, no brackets, e.g. localhost,dev.myhost.com
+      - DJANGO_ALLOWED_HOSTS=<my.domain.org>
+      - SENTRY_DSN=
+      - SENTRY_RELEASE=
+      # if SSL is ON set to `true`
+#      - DJANGO_CSRF_COOKIE_SECURE=true
+#      - DJANGO_SESSION_COOKIE_SECURE=true
+      - DJANGO_SECRET_KEY=
+      # set these if you want to be able to login using OSM
+      - SOCIAL_AUTH_OPENSTREETMAP_KEY=
+      - SOCIAL_AUTH_OPENSTREETMAP_SECRET=
+  mediator:
+    environment:
+      - DJANGO_ALLOWED_HOSTS=*
+      - SENTRY_DSN=
+      - SENTRY_RELEASE=
+      - DJANGO_SECRET_KEY=
+  worker:
+    environment:
+      - SENTRY_DSN=
+      - SENTRY_RELEASE=
