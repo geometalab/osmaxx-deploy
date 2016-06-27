@@ -71,7 +71,7 @@ def start(on_components=set(ALL_COMPONENTS)):
     health_check(on_components=on_components)
 
 
-def upgrade(on_components=set(ALL_COMPONENTS)):
+def upgrade(on_components=OSMAXX2):
     _change(on_components=on_components)
     health_check(on_components=on_components)
 
