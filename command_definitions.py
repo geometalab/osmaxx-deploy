@@ -7,9 +7,10 @@ from host_setup import DOCKER_COMPOSE_EXECUTABLE, mkdir, provide_docker_compose
 
 
 class CallList(object):
+    base_command = ['echo']
+
     def __init__(self, command, predicate=lambda: True):
         self.command_list = command
-        self.base_command = ['echo']
         self.predicate = predicate
 
     def execute(self, project, hostname, environment=None):
@@ -25,16 +26,11 @@ class CallList(object):
 
 
 class Docker(CallList):
-    def __init__(self, command, predicate=lambda: True):
-        super(Docker, self).__init__(command=command, predicate=predicate)
-        self.base_command = ['docker']
+    base_command = ['docker']
 
 
 class Compose(CallList):
-    def __init__(self, command, predicate=lambda: True):
-        super(Compose, self).__init__(command=command, predicate=predicate)
-
-        self.base_command = [DOCKER_COMPOSE_EXECUTABLE]
+    base_command = [DOCKER_COMPOSE_EXECUTABLE]
 
     def execute(self, project, hostname, environment=None):
 
