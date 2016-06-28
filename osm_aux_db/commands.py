@@ -1,7 +1,7 @@
 import functools
 
 import root
-from command_definitions import Compose, container_not_exists, not_has_succeeded_or_is_running, is_not_running
+from command_definitions import Compose, container_not_exists, neither_has_succeeded_nor_is_running, is_not_running
 
 health_check = [
     Compose(['ps']),
@@ -21,7 +21,7 @@ start = [
     ),
     Compose(
         ['up', '-d', 'coast_land_sea_importer'],
-        predicate=functools.partial(not_has_succeeded_or_is_running, 'coast_land_sea_importer')
+        predicate=functools.partial(neither_has_succeeded_nor_is_running, 'coast_land_sea_importer')
     ),
     Compose(
         ['start', 'coast_land_sea_database'],

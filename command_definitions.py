@@ -100,7 +100,7 @@ def has_succeeded_or_is_running(container_name, name_is_regex=False):
     return is_running(container_name, name_is_regex=name_is_regex) or has_succeeded(container_name, name_is_regex=name_is_regex)
 
 
-def not_has_succeeded_or_is_running(container_name, name_is_regex=False):
+def neither_has_succeeded_nor_is_running(container_name, name_is_regex=False):
     return not has_succeeded_or_is_running(container_name, name_is_regex=name_is_regex)
 
 
