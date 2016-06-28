@@ -10,14 +10,14 @@ from host_setup import provide_docker_compose
 
 env.use_ssh_config = True
 
-OSM_AUX_COMPONENT = 'osm_aux_db'
-OSM_DB_COMPONENT = 'osm_db'
-OSMAXX2 = 'osmaxx'
+OSM_AUX_COMPONENT = osm_aux_db.__name__
+OSM_DB_COMPONENT = osm_db.__name__
+OSMAXX_COMPONENT = osmaxx.__name__
 
 ALL_COMPONENTS = {
     OSM_AUX_COMPONENT: osm_aux_db,
     OSM_DB_COMPONENT: osm_db,
-    OSMAXX2: osmaxx,
+    OSMAXX_COMPONENT: osmaxx,
 }
 
 
@@ -69,7 +69,7 @@ def start(on_components=set(ALL_COMPONENTS)):
     health_check(on_components=on_components)
 
 
-def upgrade(on_components=OSMAXX2):
+def upgrade(on_components=OSMAXX_COMPONENT):
     _change(on_components=on_components)
     health_check(on_components=on_components)
 
