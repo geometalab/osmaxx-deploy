@@ -16,13 +16,18 @@ class CallList(object):
     def execute(self, project, hostname, environment=None):
         if environment is None:
             environment = {}
-        self.base_command = [
-            '{}={}'.format(env_var_name, env_var_value) for env_var_name, env_var_value in environment.items()
-        ] + self.base_command
-        commands = self.base_command + \
-                   [command.format(project=project, hostname=hostname) for command in self.command_list]
+
         if self.predicate():
-            return run(' '.join(commands))
+            command_args = [command.format(project=project, hostname=hostname) for command in self.command_list]
+            command = ' '.join(
+                self.base_command + command_args
+            )
+            return run('{} {}'.format(self._environment_strings(environment=environment), command))
+
+    def _environment_strings(self, environment):
+        return ' '.join([
+            '{}={}'.format(env_var_name, env_var_value) for env_var_name, env_var_value in environment.items()
+        ])
 
 
 class Docker(CallList):
