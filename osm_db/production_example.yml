@@ -1,0 +1,10 @@
+# assumes a server with lots of RAM and many CPUs
+version: '2'
+services:
+  osm_importer:
+    environment:
+      - num_processes=16
+      # RAM Cache in MB
+      - ram_cache=40000
+  osm_db:
+    command: postgres -B 12GB -F -N 512 -S 20GB --max_wal_size=10GB

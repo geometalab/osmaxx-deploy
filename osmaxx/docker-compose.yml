@@ -1,0 +1,159 @@
+version: '2'
+services:
+  ##### frontend START ########
+  osmaxx-proxy:
+    image: geometalab/osmaxx-nginx:v2.1.1
+    expose:
+      - "80"
+    volumes:
+      - frontend-media:/data/frontend/media
+    depends_on:
+      - frontend
+    networks:
+      - osmaxx-internal
+      - proxy-tier
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 1M
+  frontend:
+    image: geometalab/osmaxx-frontend:v2.1.1
+    command: [honcho, -f, ./web_frontend/Procfile.django.prod, start]
+    expose:
+      - "8000"
+    volumes:
+      - frontend-data:/data
+      - frontend-results:/results
+      - frontend-media:/data/media
+      - worker-data:/data/media/job_result_files
+    links:
+      - frontenddatabase:database
+      - mediator:conversion-service
+    env_file:
+      - base.env
+      - frontend.env
+    environment:
+      - DJANGO_EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+      - NUM_WORKERS=5
+    depends_on:
+      - frontenddatabase
+      - mediator
+    networks:
+      - osmaxx-internal
+      - proxy-tier
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 1M
+  frontenddatabase:
+    image: geometalab/postgis:9.4
+    volumes:
+      - frontend-database-data:/database/data
+    environment:
+      - PGDATA=/database/data
+    networks:
+      - osmaxx-internal
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 1M
+  ##### frontend END ########
+  ##### CONVERSION SERVICE START ########
+  mediator:
+    image: geometalab/osmaxx-mediator:v2.1.1
+    command: [honcho, -f, ./osmaxx_conversion_service/Procfile.mediator.prod, start]
+    expose:
+      - "8901"
+    volumes:
+      - worker-data:/data/media/job_result_files
+    links:
+      - conversionserviceredis:redis
+      - mediatordatabase:database
+    env_file:
+      - base.env
+      - conversion.env
+    environment:
+      - DATABASE_HOST=database
+      - DATABASE_PORT=5432
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - NUM_WORKERS=5
+      - DJANGO_ALLOWED_HOSTS=*
+      - DJANGO_SETTINGS_MODULE=osmaxx_conversion_service.config.settings.production
+    depends_on:
+      - conversionserviceredis
+      - mediatordatabase
+    networks:
+      - osmaxx-internal
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 1M
+  worker:
+    image: geometalab/osmaxx-worker:v2.1.1
+    command: [honcho, -f, ./osmaxx_conversion_service/Procfile.worker, start]
+    volumes:
+      - osm_data:/var/data/osm-planet
+      - worker-data:/data/media/job_result_files
+    links:
+      - conversionserviceredis:redis
+    external_links:
+      - coast_land_sea_database:osmboundaries-database
+      - osm_db:world-database
+    env_file:
+      - base.env
+      - conversion.env
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DJANGO_SETTINGS_MODULE=osmaxx_conversion_service.config.settings.worker
+    depends_on:
+      - conversionserviceredis
+    networks:
+      - osm
+      - osmaxx-internal
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 1M
+  conversionserviceredis:
+    image: redis
+    networks:
+      - osmaxx-internal
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 1M
+  mediatordatabase:
+    image: geometalab/postgis:9.4
+    volumes:
+      - mediator-database-data:/database/data
+    environment:
+      - PGDATA=/database/data
+    networks:
+      - osmaxx-internal
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 1M
+  ##### CONVERSION SERVICE END ########
+volumes:
+  # osmaxx
+  frontend-database-data: {}
+  frontend-data: {}
+  frontend-media: {}
+  frontend-results: {}
+  mediator-database-data: {}
+  worker-data: {}
+  # osm-world-db
+  osm_data:
+    external:
+      name: osm_world_data
+networks:
+  osmaxx-internal: {}
+  osm:
+    external:
+      name: osm
+  proxy-tier:
+    external:
+      name: nginx-proxy

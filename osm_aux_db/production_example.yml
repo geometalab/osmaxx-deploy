@@ -1,0 +1,5 @@
+# assumes a server with lots of RAM and many CPUs
+version: '2'
+services:
+  coast_land_sea_database:
+    command: postgres -B 4GB -F -N 512 -S 6GB

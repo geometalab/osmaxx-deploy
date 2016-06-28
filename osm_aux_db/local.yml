@@ -1,0 +1,4 @@
+version: '2'
+services:
+  coast_land_sea_database:
+    command: postgres -F

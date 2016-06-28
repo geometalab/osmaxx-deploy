@@ -1,0 +1,24 @@
+version: '2'
+services:
+  osmaxx-proxy:
+    ports:
+      - "8080:80"
+  frontend:
+    environment:
+      # comma separated list, no brackets, e.g. localhost,dev.myhost.com
+      - DJANGO_ALLOWED_HOSTS=*
+      # if SSL is ON set to `true`
+      - DJANGO_CSRF_COOKIE_SECURE=false
+      - DJANGO_SESSION_COOKIE_SECURE=false
+      - DJANGO_SECRET_KEY=K3ODW4nJMJ7j5cMZJGnvk0XP3S8snYsE5acZ5zoaQfFchJ09WhT1fLPsGQPSbp6e8TQ58mlENEl9Ul1P
+      - DJANGO_SETTINGS_MODULE=web_frontend.config.settings.production
+      # can't be longer than 30 characters!
+      - DJANGO_OSMAXX_CONVERSION_SERVICE_USERNAME=siDM0QuO2Xfi1y5U
+      - DJANGO_OSMAXX_CONVERSION_SERVICE_PASSWORD=j28zNTcR3uRHdTlS
+  mediator:
+    environment:
+      - DJANGO_ALLOWED_HOSTS=*
+      - DJANGO_SECRET_KEY=7lee1lGtcOYmELRNW4ySmv3TzXOkWPizz0bm2ksZjgAIkb2zcxfRylTkz7SC8WQWN91JorLy7gdDWBnz
+      # can't be longer than 30 characters!
+      - DJANGO_OSMAXX_CONVERSION_SERVICE_USERNAME=siDM0QuO2Xfi1y5U
+      - DJANGO_OSMAXX_CONVERSION_SERVICE_PASSWORD=j28zNTcR3uRHdTlS

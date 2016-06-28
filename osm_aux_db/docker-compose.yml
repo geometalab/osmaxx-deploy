@@ -1,0 +1,52 @@
+version: '2'
+services:
+  coast_land_sea_database:
+    # to limit scaling to exactly 1, we need to specify the container name
+    container_name: coast_land_sea_database
+    image: geometalab/postgis:9.5
+    volumes:
+      - coast_land_sea_database-data:/var/lib/postgresql/data/
+    command: postgres -B 2GB -F -N 512 -S 2GB
+    environment:
+      - POSTGRES_DB=osmboundaries
+      - POSTGRES_USER=osmboundaries
+      - POSTGRES_PASSWORD=osmboundaries
+    networks:
+      - coast_land_sea-internal
+      - osm
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 1M
+    restart: always
+  coast_land_sea_importer:
+    # to limit scaling to exactly 1, we need to specify the container name
+    container_name: coast_land_sea_importer
+    image: geometalab/osmboundaries:latest
+    depends_on:
+      - coast_land_sea_database
+    links:
+      - coast_land_sea_database:osmboundaries-database
+    environment:
+        # the same as the ones in the database above
+        - POSTGRES_DB=osmboundaries
+        - POSTGRES_USER=osmboundaries
+        - POSTGRES_PASSWORD=osmboundaries
+        # same as the link name/depends_on
+        - POSTGRES_HOST=osmboundaries-database
+    networks:
+      - coast_land_sea-internal
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 1M
+    labels:
+      io.rancher.container.start_once: "true"
+volumes:
+  coast_land_sea_database-data: {}
+networks:
+  coast_land_sea-internal:
+    driver: bridge
+  osm:
+    external:
+      name: osm
