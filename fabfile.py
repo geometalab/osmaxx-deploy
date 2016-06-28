@@ -58,8 +58,6 @@ _actual_start = Action('start', default_components=set(ALL_COMPONENTS))
 _stop = Action('stop', default_components=set(ALL_COMPONENTS))
 _change = Action('change', default_components=set(ALL_COMPONENTS))
 
-DOCKER_COMPOSE_PATH = 'osmaxx-deploy/bin/docker-compose'
-
 
 def prepare_host():
     provide_docker_compose()
