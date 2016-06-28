@@ -157,7 +157,3 @@ networks:
   proxy-tier:
     external:
       name: nginx-proxy
-
-
-
-

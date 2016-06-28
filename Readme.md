@@ -11,8 +11,7 @@ Server with:
 
 ### Local-Machine-Setup
 
-We are using Vagrant, other methods should work as well, as long as you have a working
-box with ssh access to.
+For testing the deployment logic, we let a Vagrant box stand in for the target server. Other methods should work as well, as long as you have a working machine with SSH access to.
 
 Build the image:
 

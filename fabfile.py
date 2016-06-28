@@ -36,7 +36,7 @@ class Action(object):
             exec_string = "executing {} on {}".format(self.action, component)
             print("")
             print(exec_string)
-            print("="*len(exec_string))
+            print("=" * len(exec_string))
 
             module = ALL_COMPONENTS[component]
             if hasattr(module, 'ENVIRONMENT'):
@@ -44,7 +44,7 @@ class Action(object):
 
             for command in getattr(module, self.action):
                 command.execute(project=component, hostname=env.host_string, environment=component_environment)
-            print('*'*40)
+            print('*' * 40)
 
     def __call__(self, on_components=None):
         if on_components is None:
