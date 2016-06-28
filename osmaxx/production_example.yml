@@ -3,35 +3,35 @@ services:
   osmaxx-proxy:
     environment:
       # comma separated list, no brackets, e.g. localhost,dev.myhost.com
-      - VIRTUAL_HOST=<my.domain.org>
-      - LETSENCRYPT_HOST=<my.domain.org>
-      - LETSENCRYPT_EMAIL=<email@my.domain.org>
+      - VIRTUAL_HOST=my.example.com
+      - LETSENCRYPT_HOST=my.example.com
+      - LETSENCRYPT_EMAIL=example@my.example.com
   frontend:
     environment:
       # comma separated list, no brackets, e.g. localhost,dev.myhost.com
-      - DJANGO_ALLOWED_HOSTS=<my.domain.org>
-      - SENTRY_DSN=
-      - SENTRY_RELEASE=
+      - DJANGO_ALLOWED_HOSTS=my.example.com
+      - SENTRY_DSN=https://key:password@sentry.example.com/1
+      - SENTRY_RELEASE=production
       # if SSL is ON set to `true`
 #      - DJANGO_CSRF_COOKIE_SECURE=true
 #      - DJANGO_SESSION_COOKIE_SECURE=true
-      - DJANGO_SECRET_KEY=
+      - DJANGO_SECRET_KEY=TODO-set_this_to_an_unguessable_unique_value
       # set these if you want to be able to login using OSM
-      - SOCIAL_AUTH_OPENSTREETMAP_KEY=
-      - SOCIAL_AUTH_OPENSTREETMAP_SECRET=
-      # can't be longer than 30 characters!
-      - DJANGO_OSMAXX_CONVERSION_SERVICE_USERNAME=
-      - DJANGO_OSMAXX_CONVERSION_SERVICE_PASSWORD=
+      - SOCIAL_AUTH_OPENSTREETMAP_KEY=TODO-set_to_your_openstreetmap_key
+      - SOCIAL_AUTH_OPENSTREETMAP_SECRET=TODO-set_to_your_openstreetmap_secret
+      # can't be longer than 30 characters, needs to be the same as in the mediator!
+      - DJANGO_OSMAXX_CONVERSION_SERVICE_USERNAME=TODO-set_this_to_an_unguessable_unique_name
+      - DJANGO_OSMAXX_CONVERSION_SERVICE_PASSWORD=TODO-set_this_to_an_unguessable_unique_value
   mediator:
     environment:
       - DJANGO_ALLOWED_HOSTS=*
-      - SENTRY_DSN=
-      - SENTRY_RELEASE=
-      - DJANGO_SECRET_KEY=
-      # can't be longer than 30 characters!
-      - DJANGO_OSMAXX_CONVERSION_SERVICE_USERNAME=
-      - DJANGO_OSMAXX_CONVERSION_SERVICE_PASSWORD=
+      - SENTRY_DSN=https://key:password@sentry.example.com/1
+      - SENTRY_RELEASE=production
+      - DJANGO_SECRET_KEY=TODO-set_this_to_an_unguessable_unique_value
+      # can't be longer than 30 characters, needs to be the same as in the frontend!
+      - DJANGO_OSMAXX_CONVERSION_SERVICE_USERNAME=TODO-set_this_to_an_unguessable_unique_name
+      - DJANGO_OSMAXX_CONVERSION_SERVICE_PASSWORD=TODO-set_this_to_an_unguessable_unique_value
   worker:
     environment:
-      - SENTRY_DSN=
-      - SENTRY_RELEASE=
+      - SENTRY_DSN=https://key:password@sentry.example.com/1
+      - SENTRY_RELEASE=production
