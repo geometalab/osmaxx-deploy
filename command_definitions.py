@@ -13,14 +13,16 @@ class CallList(object):
         self.command_list = command
         self.predicate = predicate
 
-    def execute(self, project, hostname, environment=None):
+    def execute(self, project, hostname, environment=None, extra_command_args=None):
         if environment is None:
             environment = {}
+        if extra_command_args is None:
+            extra_command_args = []
 
         if self.predicate():
             command_args = [command.format(project=project, hostname=hostname) for command in self.command_list]
             command = ' '.join(
-                self.base_command + command_args
+                self.base_command + extra_command_args + command_args
             )
             return run('{} {}'.format(self._environment_strings(environment=environment), command))
 
@@ -37,8 +39,7 @@ class Docker(CallList):
 class Compose(CallList):
     base_command = [DOCKER_COMPOSE_EXECUTABLE]
 
-    def execute(self, project, hostname, environment=None):
-
+    def execute(self, project, hostname, environment=None, extra_command_args=None):
         provide_docker_compose()
         compose_main_file = '{0}/docker-compose.yml'.format(project)
         compose_host_file = '{0}/{1}.yml'.format(project, hostname)
@@ -51,10 +52,10 @@ class Compose(CallList):
         if len(glob.glob(env_file_path)) > 0:
             put(local_path="{}/*.env".format(project), remote_path="{}/".format(project))
 
-        self.base_command += [
+        extra_command_args = [
             '-f', compose_main_file, '-f', compose_host_file
         ]
-        super(Compose, self).execute(project, hostname, environment=environment)
+        super(Compose, self).execute(project, hostname, environment=environment, extra_command_args=extra_command_args)
 
 
 def is_running(container_name, name_is_regex=False):
