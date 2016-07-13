@@ -22,6 +22,15 @@ services:
       # can't be longer than 30 characters, needs to be the same as in the mediator!
       - DJANGO_OSMAXX_CONVERSION_SERVICE_USERNAME=TODO-set_this_to_an_unguessable_unique_name
       - DJANGO_OSMAXX_CONVERSION_SERVICE_PASSWORD=TODO-set_this_to_an_unguessable_unique_value
+      - DJANGO_EMAIL_HOST=TODO-set_this
+      - DJANGO_EMAIL_HOST_PASSWORD=TODO-set_this
+      - DJANGO_EMAIL_HOST_USER=TODO-set_this
+      - DJANGO_EMAIL_PORT=TODO-set_this
+      - DJANGO_EMAIL_USE_TLS=TODO-set_this
+      - DJANGO_EMAIL_USE_SSL=TODO-set_this
+      - DJANGO_DEFAULT_FROM_EMAIL=TODO-set_this
+      - DJANGO_SERVER_EMAIL=TODO-set_this
+      - OSMAXX_ACCOUNT_MANAGER_EMAIL=TODO-set_this
   mediator:
     environment:
       - DJANGO_ALLOWED_HOSTS=*
