@@ -116,6 +116,35 @@ services:
       driver: "json-file"
       options:
         max-size: 1M
+  worker-exclusive:
+    image: geometalab/osmaxx-worker:v2.1.1
+    command: [honcho, -f, ./osmaxx_conversion_service/Procfile.worker, start]
+    volumes:
+      - osm_data:/var/data/osm-planet
+      - worker-data:/data/media/job_result_files
+    links:
+      - conversionserviceredis:redis
+    external_links:
+      - coast_land_sea_database:osmboundaries-database
+      - osm_db:world-database
+    env_file:
+      - base.env
+      - conversion.env
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DJANGO_SETTINGS_MODULE=osmaxx_conversion_service.config.settings.worker
+      # only listens for jobs in this specific queue
+      - WORKER_QUEUES=high
+    depends_on:
+      - conversionserviceredis
+    networks:
+      - osm
+      - osmaxx-internal
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 1M
   conversionserviceredis:
     image: redis
     networks:
