@@ -2,7 +2,7 @@ version: '2'
 services:
   ##### frontend START ########
   osmaxx-proxy:
-    image: geometalab/osmaxx-nginx:v2.2.4
+    image: geometalab/osmaxx-nginx:v2.3.0
     expose:
       - "80"
     volumes:
@@ -17,7 +17,7 @@ services:
       options:
         max-size: 1M
   frontend:
-    image: geometalab/osmaxx-frontend:v2.2.4
+    image: geometalab/osmaxx-frontend:v2.3.0
     command: [honcho, -f, ./web_frontend/Procfile.django.prod, start]
     expose:
       - "8000"
@@ -60,7 +60,7 @@ services:
   ##### frontend END ########
   ##### CONVERSION SERVICE START ########
   mediator:
-    image: geometalab/osmaxx-mediator:v2.2.4
+    image: geometalab/osmaxx-mediator:v2.3.0
     command: [honcho, -f, ./osmaxx_conversion_service/Procfile.mediator.prod, start]
     expose:
       - "8901"
@@ -90,7 +90,7 @@ services:
       options:
         max-size: 1M
   worker:
-    image: geometalab/osmaxx-worker:v2.2.4
+    image: geometalab/osmaxx-worker:v2.3.0
     command: [honcho, -f, ./osmaxx_conversion_service/Procfile.worker, start]
     volumes:
       - osm_data:/var/data/osm-planet
@@ -117,7 +117,7 @@ services:
       options:
         max-size: 1M
   worker-exclusive:
-    image: geometalab/osmaxx-worker:v2.2.4
+    image: geometalab/osmaxx-worker:v2.3.0
     command: [honcho, -f, ./osmaxx_conversion_service/Procfile.worker, start]
     volumes:
       - osm_data:/var/data/osm-planet
