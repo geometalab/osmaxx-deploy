@@ -2,7 +2,7 @@ version: '2'
 services:
   ##### frontend START ########
   osmaxx-proxy:
-    image: geometalab/osmaxx-nginx:v2.5.0
+    image: geometalab/osmaxx-nginx:v3.0.0
     expose:
       - "80"
     volumes:
@@ -17,7 +17,7 @@ services:
       options:
         max-size: 1M
   frontend:
-    image: geometalab/osmaxx-frontend:v2.5.0
+    image: geometalab/osmaxx-frontend:v3.0.0
     command: [honcho, -f, ./web_frontend/Procfile.django.prod, start]
     expose:
       - "8000"
@@ -60,7 +60,7 @@ services:
   ##### frontend END ########
   ##### CONVERSION SERVICE START ########
   mediator:
-    image: geometalab/osmaxx-mediator:v2.5.0
+    image: geometalab/osmaxx-mediator:v3.0.0
     command: [honcho, -f, ./osmaxx_conversion_service/Procfile.mediator.prod, start]
     expose:
       - "8901"
@@ -90,7 +90,7 @@ services:
       options:
         max-size: 1M
   worker:
-    image: geometalab/osmaxx-worker:v2.5.0
+    image: geometalab/osmaxx-worker:v3.0.0
     command: [honcho, -f, ./osmaxx_conversion_service/Procfile.worker, start]
     volumes:
       - osm_data:/var/data/osm-planet
@@ -99,7 +99,6 @@ services:
       - conversionserviceredis:redis
     external_links:
       - coast_land_sea_database:osmboundaries-database
-      - osm_db:world-database
     env_file:
       - base.env
       - conversion.env
@@ -117,7 +116,7 @@ services:
       options:
         max-size: 1M
   worker-exclusive:
-    image: geometalab/osmaxx-worker:v2.5.0
+    image: geometalab/osmaxx-worker:v3.0.0
     command: [honcho, -f, ./osmaxx_conversion_service/Procfile.worker, start]
     volumes:
       - osm_data:/var/data/osm-planet
@@ -126,7 +125,6 @@ services:
       - conversionserviceredis:redis
     external_links:
       - coast_land_sea_database:osmboundaries-database
-      - osm_db:world-database
     env_file:
       - base.env
       - conversion.env
@@ -166,6 +164,59 @@ services:
       options:
         max-size: 1M
   ##### CONVERSION SERVICE END ########
+  ##### WORLD PBF UPDATER START ########
+  osm-pbf-updater:
+    # to limit scaling to exactly 1, we need to specify the container name
+    container_name: osm-pbf-updater
+    image: geometalab/osm-pbf-updater:v3.0.0
+    volumes:
+      - osm_data:/var/data/osm-planet
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 1M
+  ##### WORLD PBF UPDATER END ########
+  ##### BOUNDARIES START ########
+  coast_land_sea_database:
+    # to limit scaling to exactly 1, we need to specify the container name
+    container_name: coast_land_sea_database
+    image: geometalab/postgis:9.5
+    volumes:
+      - coast_land_sea_database-data:/var/lib/postgresql/data/
+    command: postgres -B 2GB -F -N 512 -S 2GB
+    environment:
+      - POSTGRES_DB=osmboundaries
+      - POSTGRES_USER=osmboundaries
+      - POSTGRES_PASSWORD=osmboundaries
+    networks:
+      - osmaxx-internal
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 1M
+    restart: always
+  coast_land_sea_importer:
+    # to limit scaling to exactly 1, we need to specify the container name
+    container_name: coast_land_sea_importer
+    image: geometalab/osmboundaries:latest
+    depends_on:
+      - coast_land_sea_database
+    links:
+      - coast_land_sea_database:osmboundaries-database
+    environment:
+        # the same as the ones in the database above
+        - POSTGRES_DB=osmboundaries
+        - POSTGRES_USER=osmboundaries
+        - POSTGRES_PASSWORD=osmboundaries
+        # same as the link name/depends_on
+        - POSTGRES_HOST=osmboundaries-database
+    networks:
+      - osmaxx-internal
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 1M
+##### BOUNDARIES END ########
 volumes:
   # osmaxx
   frontend-database-data: {}
@@ -174,15 +225,10 @@ volumes:
   frontend-results: {}
   mediator-database-data: {}
   worker-data: {}
-  # osm-world-db
-  osm_data:
-    external:
-      name: osm_world_data
+  osm_data: {}
+  coast_land_sea_database-data: {}
 networks:
   osmaxx-internal: {}
-  osm:
-    external:
-      name: osm
   proxy-tier:
     external:
       name: nginx-proxy
