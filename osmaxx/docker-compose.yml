@@ -109,7 +109,6 @@ services:
     depends_on:
       - conversionserviceredis
     networks:
-      - osm
       - osmaxx-internal
     logging:
       driver: "json-file"
@@ -137,7 +136,6 @@ services:
     depends_on:
       - conversionserviceredis
     networks:
-      - osm
       - osmaxx-internal
     logging:
       driver: "json-file"
@@ -168,7 +166,7 @@ services:
   osm-pbf-updater:
     # to limit scaling to exactly 1, we need to specify the container name
     container_name: osm-pbf-updater
-    image: geometalab/osm-pbf-updater:v3.0.0
+    image: geometalab/osm-pbf-updater:latest
     volumes:
       - osm_data:/var/data/osm-planet
     logging:
