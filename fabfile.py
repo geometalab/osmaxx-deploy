@@ -2,7 +2,6 @@ from __future__ import print_function
 
 from fabric.api import env, run
 
-import osm_aux_db
 import osmaxx
 
 from host_setup import provide_docker_compose
