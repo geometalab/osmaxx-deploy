@@ -2,21 +2,15 @@ from __future__ import print_function
 
 from fabric.api import env, run
 
-import osm_aux_db
-import osm_db
 import osmaxx
 
 from host_setup import provide_docker_compose
 
 env.use_ssh_config = True
 
-OSM_AUX_COMPONENT = osm_aux_db.__name__
-OSM_DB_COMPONENT = osm_db.__name__
 OSMAXX_COMPONENT = osmaxx.__name__
 
 ALL_COMPONENTS = {
-    OSM_AUX_COMPONENT: osm_aux_db,
-    OSM_DB_COMPONENT: osm_db,
     OSMAXX_COMPONENT: osmaxx,
 }
 
