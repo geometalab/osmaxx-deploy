@@ -64,7 +64,7 @@ services:
   ##### CONVERSION SERVICE START ########
   mediator:
     image: geometalab/osmaxx-mediator:v3.9.1
-    command: [honcho, -f, ./osmaxx_conversion_service/Procfile.mediator.prod, start]
+    command: [honcho, -f, ./conversion_service/Procfile.mediator.prod, start]
     expose:
       - "8901"
     volumes:
@@ -82,7 +82,7 @@ services:
       - REDIS_PORT=6379
       - NUM_WORKERS=5
       - DJANGO_ALLOWED_HOSTS=*
-      - DJANGO_SETTINGS_MODULE=osmaxx_conversion_service.config.settings.production
+      - DJANGO_SETTINGS_MODULE=conversion_service.config.settings.production
     depends_on:
       - conversionserviceredis
       - mediatordatabase
@@ -94,7 +94,7 @@ services:
         max-size: 1M
   worker:
     image: geometalab/osmaxx-worker:v3.9.1
-    command: [honcho, -f, ./osmaxx_conversion_service/Procfile.worker, start]
+    command: [honcho, -f, ./conversion_service/Procfile.worker, start]
     volumes:
       - osm_data:/var/data/osm-planet
       - worker-data:/data/media/job_result_files
@@ -108,7 +108,7 @@ services:
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - DJANGO_SETTINGS_MODULE=osmaxx_conversion_service.config.settings.worker
+      - DJANGO_SETTINGS_MODULE=conversion_service.config.settings.worker
     depends_on:
       - conversionserviceredis
     networks:
@@ -119,7 +119,7 @@ services:
         max-size: 1M
   worker-exclusive:
     image: geometalab/osmaxx-worker:v3.9.1
-    command: [honcho, -f, ./osmaxx_conversion_service/Procfile.worker, start]
+    command: [honcho, -f, ./conversion_service/Procfile.worker, start]
     volumes:
       - osm_data:/var/data/osm-planet
       - worker-data:/data/media/job_result_files
@@ -133,7 +133,7 @@ services:
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - DJANGO_SETTINGS_MODULE=osmaxx_conversion_service.config.settings.worker
+      - DJANGO_SETTINGS_MODULE=conversion_service.config.settings.worker
       # only listens for jobs in this specific queue
       - WORKER_QUEUES=high
     depends_on:
